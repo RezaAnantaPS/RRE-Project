@@ -1,0 +1,18 @@
+		 HELP                   
+	Tata Cara Memulai Permainan            
+ 1. Saat di main menu, ketik angka (1) untuk memulai permainan              
+ 2. Tentukan apakah ingin melawan player atau bot                      
+ 3. a) Jika melawan player, maka user diharuskan mengisi nama pemain pertama dan kedua 
+    b) Jika melawan bot, user wajib memasukan nama player pertama dan menentukan tingkat kesulitan  
+ 4. Tentukan papan permainan             
+	    Cara Memasukan Huruf     
+ 1. Tentukan letak untuk memasukan S/O (baris ,kolom)              
+ 2. Masukan huruf s/o
+ 3. Untuk mendapatkan point, player harus membentuk kata sos baik secara datar, vertikal, maupun diagonal 
+	   Tentang Permainan   
+ Permainan ini dibuat dalam bahasa c dengan menggunakan compiler Embarcadero Dev-C++ Version 6.3 2021 
+ untuk memenuhi Tugas Besar Mata Kuliah Dasar Dasar Pemrograman Praktek Politeknik Negeri Bandung.
+ Dibuat Oleh : 
+ 1. Egi Satria Dharma Y W   (211534040) 
+ 2. Reza Ananta Permadi S   (211524059) 
+ 3. Rofa'ul Akrom Hendrawan (211534061)          

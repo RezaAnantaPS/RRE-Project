@@ -1,3 +1,15 @@
+/*
+Autor :
+ 1. Egi Satria Dharma Y W   (211534040) 
+ 2. Reza Ananta Permadi S   (211524059) 
+ 3. Rofa'ul Akrom Hendrawan (211534061) 
+
+Ver : 13-01-2022
+Compiler : Dev-C++
+
+*/
+
+
 #include <stdio.h>
 #include <windows.h>
 #include <stdlib.h>

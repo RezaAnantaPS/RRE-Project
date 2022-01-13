@@ -192,7 +192,7 @@ void chooseBoard(){
 }
 
 void printBoard(){
-		//from github
+		//from github https://github.com/ertrldtcu/sos-game-in-c
 		// top line
 		for (i = 1; i < (board + 2) * 6 + 2; i++) {
 			printf("\xdb");
@@ -954,4 +954,4 @@ void gotoxy(int x, int y) {
   	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-
+/*scoreboard untuk pengisian menggunakan file belum tercapai*/

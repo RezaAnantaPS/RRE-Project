@@ -22,28 +22,33 @@ void drawScore();	//menampilkan score secara saat permainan berlangsung
 int controlSOS();	//mengecek posisi pada sos
 void playGameEasy();//memproses dalam permainan player vs bot easy
 void playGameNormal();//memproses dalam permainan player vs bot normal
+void playGameHard();//memproses dalam permainan player vs bot hard
+int findSOS_Com(int, int, char);//mencari SOS yang terbentuk pada vs computer
+int findPosition();//mencari posisi kosong
 void moveComp();	//memproses bagaimana bot bergerak
+void moveCompHard();//memproses bagaimana bot bergerak pada mode hard
 int checkSpace();	//memeriksa apakah masih ada ruang kosong dalam board
-int checkWinner();	//memeriksa pemenang
-void drawResultPvP();	//menampilkan pemenang
-void drawResultCom();
-void drawWinP1();
-void drawWinP2();
-void drawLose();
-void drawDraw();
+int compFindOS(); //mencari OS yang bersebelahan untuk menentukan gerakan computer selanjutnya
+int compFindSS(); //mencari SS yang bersebelahan untuk menentukan gerakan computer selanjutnya
+void drawResultPvP();	//memeriksa hasil dari permainan pemain vs pemain
+void drawResultCom();	//memeriksa hasil dari permainan pemain vs computer
+void drawWinP1();	//menampilkan Player 1 sebagai pemenang
+void drawWinP2();	//menampilkan Player 2 sebagai pemenang
+void drawLose();	//menampilkan apabila pemain kalah
+void drawDraw();	//menampilkan apabila score akhir dari kedua pemain sama
 
 int scores[2] = { 0,0 }; // save players scores
 int currentPlayer = 0; // save current player, can be 0 or 1
 char sos[9][9]; // save S and O
 int sRow, sCol; // save selected row and column
 char name[2][20]; // save player nicks
-char winner[20];
-char SO;
+char SO; //diisi huruf S/O
 void gotoxy(int x, int y);
-int option, board, botdiff, i, j;
+int option, board, botdiff, i, j, got;
 int counter = 1; // round counter
 
 int main(){
+		//menghubungkan modul modul pada fitur main menu
 		system("mode 131, 31");
 		system("cls");
 		system("color D0");
@@ -61,6 +66,7 @@ int main(){
 }
 
 int startGame(){
+	//menghubungkan modul modul yang terdapat dalam permainan SOS yang dibuat
 	int rival;
 	chooseRival();
    				gotoxy(17,6);scanf("%d",&rival);
@@ -107,13 +113,15 @@ int startGame(){
                                     printf("\nWRONG INPUT NUMBER.\n");
                                     system("pause");
                             }
-                      }drawResultCom();
+                    drawResultCom();
+                }
         printf("\nPress any key to main menu... ");
         getch();
         main();
 }
 
 void printMenu(){
+	//menampilkan main menu
 	system ("cls");
     printf("\n%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",201,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,187);
     printf("\n%c        %c%c%c %c%c%c %c%c%c         %c",186,201,205,205,201,205,187,201,205,205,186);
@@ -132,6 +140,7 @@ void printMenu(){
 }
 
 void chooseRival(){
+	//menampilkan pilihan rival
 	system ("cls");
     printf("\n%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",201,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,187);
     printf("\n%c    Choose Your Rival       %c",186,186);
@@ -143,6 +152,7 @@ void chooseRival(){
 }
 
 void entryName1(){
+	//tampilan input nama untuk pemain vs pemain
 	system ("cls");
     printf("\n%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",201,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,187);
     printf("\n%c      Input Nickname        %c",186,186);
@@ -156,6 +166,7 @@ void entryName1(){
 }
 
 void entryName2(){
+	//tampilan input nama untuk pemain vs computer
 	system("cls");
 	printf("\n%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",201,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,187);
     printf("\n%c      Input Nickname        %c",186,186);
@@ -167,8 +178,8 @@ void entryName2(){
 }
 
 void chooseBoard(){
+	//menampilkan pilihan ukuran board
 	system ("cls");
-	menuboard:
     printf("\n%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",201,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,187);
     printf("\n%c        Choose Board        %c",186,186);
     printf("\n%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",204,205,205,205,205,205,205,205,205,203,205,205,205,205,205,205,205,205,205,203,205,205,205,205,205,205,205,205,205,185);
@@ -181,6 +192,7 @@ void chooseBoard(){
 }
 
 void printBoard(){
+		//from github
 		// top line
 		for (i = 1; i < (board + 2) * 6 + 2; i++) {
 			printf("\xdb");
@@ -223,6 +235,7 @@ void printBoard(){
 }
 
 void playGame(){
+	//modul untuk memproses permainan pemain vs pemain
 	while (counter <= board * board) {
 		system("cls");
 		sRow = 0; sCol = 0;
@@ -248,6 +261,7 @@ void playGame(){
 }
 
 int playerInput(){
+	//input dari player untuk mode pemain vs pemain 
 	do{
 		fflush(stdin);
 		printf("\n\n\xaf Player turn: %s\n", name[currentPlayer]);
@@ -289,6 +303,7 @@ int playerInput(){
 }
 
 int controlSOS() {
+	//mengecek SOS yang terbentuk
 	if (sos[sRow - 1][sCol - 1] == 'S') {
 		if (sos[sRow - 3][sCol - 3] == 'S' && sos[sRow - 2][sCol - 2] == 'O') return 1;
 		if (sos[sRow - 3][sCol - 1] == 'S' && sos[sRow - 2][sCol - 1] == 'O') return 1;
@@ -309,6 +324,7 @@ int controlSOS() {
 }
 
 void drawScore() {
+	//menampilkan live score saat permainan berlangsung
 	printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",201,205,205,205,205,205,205,205,205,205,205,205,205,205,203,205,205,205,205,205,205,205,205,205,205,205,205,205,205,187);
 	printf("\n%c             %c              %c",186,186,186);
 	printf("\n%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",204,205,205,205,205,205,205,205,205,205,205,205,205,205,206,205,205,205,205,205,205,205,205,205,205,205,205,205,205,185);
@@ -321,6 +337,7 @@ void drawScore() {
 }
 
 void chooseDiff(){
+	//menampilkan pilihan tingkat kesulitan dalam vs bot
 	system ("cls");
 	
     printf("\n%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",201,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,205,187);
@@ -336,7 +353,9 @@ void chooseDiff(){
 }
 
 int botDiff(int botdiff){
+	//untuk memproses pilihan kesulitan hasil inputan pemain
 	gotoxy(18,8);scanf("%d",&botdiff);
+	menubot:
 	switch (botdiff){
 		case 1 :
 			resetBoard(board);
@@ -346,13 +365,19 @@ int botDiff(int botdiff){
 			resetBoard(board);
 			playGameNormal();
 			break;
+		case 3 :
+			resetBoard(board);
+			playGameHard();
+			break;
 		default :
 			printf("\nWRONG INPUT NUMBER.\n");
-            system("pause");	
+            system("pause");
+            goto menubot;
 	}
 }
 
 void resetBoard(int board){
+	//membuat board kosong sebelum permain dimulai
 	for( i=0; i < board; i++){
 		for( j=0; j < board; j++){
 			sos[i][j] = ' ';
@@ -361,6 +386,7 @@ void resetBoard(int board){
 }
 
 int checkSpace(){
+	//mengecek kotak kosong pada board
 	for(sRow = 0; sRow < board; sRow++){
 		for(sCol = 0; sCol < board; sCol++){
 			if(sos[sRow][sCol] == ' '){
@@ -372,8 +398,8 @@ int checkSpace(){
 }
 
 void drawResultPvP(){
+	//memeriksa hasil dari permainan pemain vs pemain
 	system("cls");
-	printf("\xaf\xaf Permainan selesai!!!! \xae\xae\n\n");
 	if (scores[0] > scores[1]){
 		drawWinP1();
 	}
@@ -385,8 +411,8 @@ void drawResultPvP(){
 }
 
 void drawResultCom(){
+	//memeriksa hasil dari permainan pemain vs computer
 	system("cls");
-	printf("\xaf\xaf Permainan selesai!!!! \xae\xae\n\n");
 	if (scores[0] > scores[1]){
 		drawWinP1();
 	}
@@ -398,6 +424,7 @@ void drawResultCom(){
 }
 
 void drawLose(){
+	//tampilan jika pemain kalah
 	system("cls");
 	
 	printf("\n|||       |||||||||  |||||||||  |||||||||     /\\     /\\");
@@ -410,6 +437,7 @@ void drawLose(){
 }
 
 void drawWinP1(){
+	//tampilan jika player 1 yang menang
 	system("cls");
 	
 	printf("\n||| ||| |||  |||  |||   |||  |||   ||| |||||||||  |||||||||   **||||*||||**");
@@ -421,6 +449,7 @@ void drawWinP1(){
 }
 
 void drawWinP2(){
+	//tampilan jika player 2 yang menang
 	system("cls");
 	
 	printf("\n||| ||| |||  |||  |||   |||  |||   ||| |||||||||  |||||||||   **||||*||||**");
@@ -432,6 +461,7 @@ void drawWinP2(){
 }
 
 void drawDraw(){
+	//tampilan jika score antara kedua pemain sama
 	system("cls");
 	
 	printf("\n                                               _____      _____");
@@ -446,6 +476,9 @@ void drawDraw(){
 }
 
 void playGameEasy(){
+	//memproses dalam permain vs bot easy
+	scores[0]=0;
+	scores[1]=0;
 	while (!checkSpace()){
 		system("cls");
 		sRow = 0; sCol = 0;
@@ -484,6 +517,9 @@ void playGameEasy(){
 }
 
 void playGameNormal(){
+	//memproses dalam permainan vs bot normal
+	scores[0]=0;
+	scores[1]=0;
 	while (!checkSpace()){
 		system("cls");
 		sRow = 0; sCol = 0;
@@ -521,34 +557,66 @@ void playGameNormal(){
 	drawResultCom();
 }
 
+void playGameHard(){
+	//memproses dalam permainan vs bot hard
+	scores[0]=0;
+	scores[1]=0;
+	while (!checkSpace()){
+		system("cls");
+		sRow = 0; sCol = 0;
+		drawScore();
+		printBoard();
+		if(currentPlayer == 0){
+			int input = playerInput();
+			if (input){
+				int point = controlSOS();
+				if (!point) {
+					currentPlayer = (currentPlayer + 1) % 2;
+				}
+				else {
+					scores[currentPlayer] = scores[currentPlayer] + 1;
+					printf("\xaf\xaf\xaf Yeay, you take point! Keep it up!");
+					getch();
+				}
+			}			
+		}else{
+			moveCompHard();
+			}
+		}
+	drawResultCom();
+}
+
 int controlBot(){
-	/*Untuk Computer menyimpan huruf O pada papan*/
+	//Untuk Computer menyimpan huruf O pada papan
+	//horizontal
 	if(sos[sRow - 1][sCol - 1] == 'S' && sos[sRow - 1][sCol + 1] == 'S'){
-		SO = 'O';	//kanan
+		SO = 'O';
 		return 1;
 	}else if(sos[sRow - 1][sCol - 1] == 'S' && sos[sRow - 1][sCol - 3] == 'S'){
-		SO = 'O'; //kiri
+		SO = 'O';
 		return 1;
+	//vertikal
 	}else if(sos[sRow - 1][sCol - 1] == 'S' && sos[sRow + 1][sCol - 1] == 'S'){
-		SO = 'O';	//bawah
+		SO = 'O';
 		return 1;
 	}else if(sos[sRow - 1][sCol - 1] == 'S' && sos[sRow - 3][sCol - 1] == 'S'){
-		SO = 'O'; //atas
+		SO = 'O'; 
 		return 1;
+	//diagonal
 	}else if(sos[sRow - 1][sCol - 1] == 'S' && sos[sRow - 3][sCol + 1] == 'S'){
-		SO = 'O'; //serong kanan atas
+		SO = 'O';
 		return 1;
 	}else if(sos[sRow - 1][sCol - 1] == 'S' && sos[sRow + 1][sCol + 1] == 'S'){
-		SO = 'O'; //serong kanan bawah
+		SO = 'O';
 		return 1;
 	}else if(sos[sRow - 1][sCol - 1] == 'S' && sos[sRow + 1][sCol - 3] == 'S'){
-		SO = 'O'; //serong kiri bawah
+		SO = 'O'; 
 		return 1;
 	}else if(sos[sRow - 1][sCol - 1] == 'S' && sos[sRow - 3][sCol - 3] == 'S'){
-		SO = 'O'; //serong kiri atas
+		SO = 'O';
 		return 1;
 	}
-	/*Untuk Computer menyimpan huruf S pada papan*/
+	//Input Computer huruf S
 	if (sos[sRow - 3][sCol - 3] == 'S' && sos[sRow - 2][sCol - 2] == 'O'){
 		SO = 'S';
 		return 1;	
@@ -585,6 +653,7 @@ int controlBot(){
 }
 
 void moveComp(){
+	//pergerakan komputer
 	int x;	//untuk huruf O atau s
 	system("cls");
 	drawScore();
@@ -609,7 +678,216 @@ void moveComp(){
 	sos[sRow-1][sCol-1] = SO;
 }
 
+int positionValid(int space){
+	//memeriksa posisi yang dapat diisi computer
+  	if(space>0 && space<((board*board)+1)){	
+		sRow = (space-1)/board;
+		sCol = (space-1)%board;
+
+		if (sos[sRow][sCol]==' '){
+			return 1;
+		}
+		else {
+			return 0;
+		} 
+	}
+  	else{
+		return 0;	
+  	}
+}
+
+
+int findPosition(){
+	int space;
+	
+	for (space=1; space<((board*board)+1); space++){
+		sRow = (space-1)/board;
+		sCol = (space-1)%board;
+		if (sos[sRow][sCol] == ' '){
+			return space;
+		}
+	}
+	return 0;
+}
+
+void moveCompHard(){
+	int space;
+	char SO;
+
+  	do{
+  		system("cls");
+  		drawScore();
+    	printBoard();
+		if(compFindOS()){
+			space = compFindOS();
+			SO = 'S';
+		}
+		else if(compFindSS()){
+			space = compFindSS();
+			SO = 'O';
+		}
+		else{
+			space = findPosition();
+			SO = 'S';
+		}
+		sRow = (space-1)/board;
+		sCol = (space-1)%board;
+        
+   		sos[sRow][sCol] = SO;
+   		if(got==0){
+   			if(SO == 'S'){
+   				printf("\n\xaf\xaf Computer fills %c on [%d][%d] \n", SO, sRow+1, sCol+1);
+				system("pause");
+			}else if(SO == 'O'){
+				printf("\n\xaf\xaf Computer fills %c on [%d][%d] \n", SO, sRow+1, sCol+1);
+				system("pause");
+			}
+		}
+		else if(got==1){
+			system("cls");
+			drawScore();
+    		printBoard();
+    		if(SO == 'S'){
+   				printf("\n\xaf\xaf Computer fills %c on [%d][%d] \n", SO, sRow+1, sCol+1);
+   				printf("\xaf\xaf\xaf I get point! \n");
+				system("pause");
+			}else if(SO == 'O'){
+				printf("\n\xaf\xaf Computer fills %c on [%d][%d] \n", SO, sRow+1, sCol+1);
+				printf("\xaf\xaf\xaf I get point! \n");
+				system("pause");
+			}
+		}
+   }while(findSOS_Com(space, 2, SO) && (!checkSpace()));
+
+   return;
+}
+
+int compFindOS(){
+	int space;
+
+	for ( i=0; i<board; i++){
+		for( j=0; j<board; j++){
+		   space = ((i*board) +j)+1;
+			if(positionValid(space)){
+				if((sos[i][j+1] == 'O') && (sos[i][j+2] == 'S')){
+					return space;
+				}
+                if((sos[i][j-1] == 'O') && (sos[i][j-2] == 'S')){
+                    return space;
+                        }
+				if((sos[i+1][j] == 'O') && (sos[i+2][j] =='S')){
+					return space;
+				}
+                if((sos[i-1][j] == 'O') && (sos[i-2][j] =='S')){
+                    return space;
+                }
+				if((sos[i+1][j+1] == 'O') && (sos[i+2][j+2] == 'S')){
+                    return space;
+                }
+                if((sos[i-1][j-1] == 'O') && (sos[i-2][j-2] == 'S')){
+                    return space;
+                }
+                if((sos[i+1][j-1] == 'O') && (sos[i+2][j-2] == 'S')){
+                    return space;
+                }
+                if((sos[i-1][j+1] == 'O') && (sos[i-2][j+2] == 'S')){
+                    return space;
+                }
+		  	}
+		}
+	}
+	return 0;
+}
+
+int compFindSS(){
+	int space;
+	
+    for ( i=0; i<board; i++){
+        for( j=0; j<board; j++){  
+        
+            space = ((i*board) +j)+1;
+            if(positionValid(space)){
+		        if((sos[i][j+1] == 'S') && (sos[i][j-1] == 'S')){
+                    return space;
+            	}
+                if ((sos[i+1][j] == 'S') && (sos[i-1][j] =='S')){
+                    return space;
+        		}
+                if((sos[i+1][j+1] == 'S') && (sos[i-1][j-1] == 'S')){
+                    return space;
+                }
+                if((sos[i+1][j-1] == 'S') && (sos[i-1][j+1] == 'S')){
+                    return space;
+                }
+            }
+		}
+    }
+	return 0;
+}
+
+
+int findSOS_Com(int space, int player, char SO){
+	int get;
+	
+	sRow = (space-1)/board;
+	sCol = (space-1)%board;
+	get = 0;
+	
+  	if(SO == 'S'){
+		if ((sos[sRow][sCol-2] == 'S') && (sos[sRow][sCol-1] == 'O')){
+			get++;
+		}
+		if ((sos[sRow][sCol+1]== 'O') && (sos[sRow][sCol+2] == 'S')){
+			get++;
+		}	
+		if((sos[sRow+1][sCol] == 'O') && (sos[sRow+2][sCol] == 'S')){
+			get++;
+		}
+		if((sos[sRow-1][sCol] == 'O') && (sos[sRow-2][sCol] == 'S')){
+			get++;
+		}
+		if((sos[sRow+1][sCol+1] == 'O') && (sos[sRow+2][sCol+2] == 'S')){
+			get++;
+		}
+		if((sos[sRow-1][sCol-1] == 'O') && (sos[sRow-2][sCol-2] == 'S')){
+			get++;
+		}
+		if((sos[sRow+1][sCol-1] == 'O') && (sos[sRow+2][sCol-2] == 'S')){
+			get++;
+		}
+		if((sos[sRow-1][sCol+1] == 'O') && (sos[sRow-2][sCol+2] == 'S')){
+			get++;
+		}
+  	}
+  	else if(SO == 'O'){
+		if((sos[sRow+1][sCol] == 'S') && (sos[sRow-1][sCol] == 'S')){
+			get++;
+		}
+		if((sos[sRow][sCol+1] == 'S') && (sos[sRow][sCol-1] == 'S')){
+			get++;
+		}
+		if((sos[sRow+1][sCol+1] == 'S') && (sos[sRow-1][sCol-1] == 'S')){
+			get++;
+		}
+		if((sos[sRow+1][sCol-1] == 'S') && (sos[sRow-1][sCol+1] == 'S')){
+			get++;
+		}
+  	}
+    scores[currentPlayer] = scores[currentPlayer] + get;
+
+	if(get>0){
+		got=1;
+		return 1;
+	}
+	else{
+		currentPlayer=0;
+		got=0;
+		return 0;
+	}
+}
+
 void scoreboard(){
+	//tampilan scoreboard
 	int input;
 	system("cls");
 	printf("\n               SCOREBOARD                   ");
@@ -648,6 +926,7 @@ void scoreboard(){
 }
 
 void help(){
+	//tampilan help
 	system("cls");
 	FILE *help = NULL;
 	char input;
